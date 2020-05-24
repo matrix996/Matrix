@@ -1,0 +1,84 @@
+<title>JQuery方法库</title>
+<link rel="shortcut icon" href="../../favicon.ico">
+<link rel="stylesheet" href="../../statics/lib/common.css">
+<base target="_blank">
+
+<div class="container">
+    <h2>JQuery方法库</h2>
+        <h3>入口函数</h3>
+        <p>在script标签引入jquery文件后在另一个script标签写入口函数。 <br>
+            第一种写法 $(document).ready(function() { ... });   <br>
+             第二种写法 $(function() { ... });<br>
+            jQuery的入口函数只会等待文档树加载完成就开始执行，并不会等待图片、文件的加载。</p>
+    <h2>jQuery对象与DOM对象</h2>   
+    <p> jQuery对象是包装的DOM对象的集合，用$()的方式获取的对象 <br>
+        jQuery对象->DOM对象：$()[0]或$().get(0) <br>
+        DOM对象 -> jQuery对象：$(DOM对象)</p> 
+    <h2>操作DOM</h2>    
+    <p><b> jQuery基本选择器</b> <br>
+            ID选择器 $('#id'); 获取指定ID的元素 <br>
+            类选择器 $('.class'); 获取同一类class的元素 <br>
+            标签选择器 $('div'); 获取同一类标签的所有元素  <br>
+            并集选择器 $('div,p,li'); 使用逗号分隔，只要符合条件之一就可。 <br>
+            交集选择器 $('div.redClass'); 获取class为redClass的div元素 <br>
+        <b>jQuery层级选择器</b>  <br> 
+            子代选择器 $('ul > li'); 使用-号，获取儿子层级的元素，注意，并不会获取孙子层级的元素 <br>
+            后代选择器 $('ul li'); 使用空格，代表后代选择器，获取ul下的所有li元素，包括孙子等 <br>
+        <b> jQuery过滤选择器</b> <br>
+            :eq（index）&nbsp; $('li:eq(2)').css('color', 'red'); 获取到的li元素中，选择索引号为2的元素，索引号index从0开始。 <br>
+            children(selector) &nbsp; $('ul').children('li') 相当于$('ul-li')，子类选择器 <br>
+            find(selector) &nbsp; $('ul').find('li'); 相当于$('ul li'),后代选择器 <br>
+            siblings(selector) &nbsp; $('#first').siblings('li'); 查找兄弟节点，不包括自己本身。<br> 
+            parent() &nbsp; $('#first').parent(); 查找父元素 <br>
+            eq(index) &nbsp; $('li').eq(2); 相当于$('li:eq(2)'),index从0开始 <br>
+            next() &nbsp; $('li').next() 找下一个兄弟 <br>
+            prev() &nbsp; $('li').prev() 找上一个兄弟 </p>
+    <h2>操作样式</h2> 
+      <p> $obj.css(name, value);操作的是style属性。&nbsp;$('#one').css('background','gray');//将背景色修改为灰色 <br>
+        添加样式类 $obj.addClass(name);&nbsp;$('div').addClass('one');//给所有的div添加one的样式 <br>
+        移除样式类 $obj.removeClass('name');&nbsp;$('div').removeClass('one');//移除div中one的样式类名 <br>
+        判断是否有某个样式类 $obj.hasClass(name); &nbsp;$('div').hasClass('one');//判断第一个div是否有one的样式类 <br>
+        切换样式类 $obj.toggleClass(name); &nbsp;$('div').toggleClass('one');//如果有，移除该样式，如果没有，添加该样式</p>
+    <h2>操作距离</h2>
+    <p>$.(selector).width/height() 获取元素的高宽 <br>
+       $(selector).offset() 获取元素距离document的位置 <br>
+        $(selector).position 获取元素最近定位的父元素位置</p> 
+    <h2>动画操作</h2>
+    <p><b>三组基本动画</b> <br>
+    $obj.show/hide/slideUp/slideDown/fadeIn/fadeOut([speed], [callback]); <br>
+     显示(show)与隐藏(hide)是一组动画  <br>
+     滑入(slideUp)与滑出(slideDown)与切换(slideToggle) 高度为0过程隐藏显示 <br>
+     淡入(fadeIn)与淡出(fadeOut)与切换(fadeToggle) 透明度为0过程显示隐藏 <br>
+       <b>animate: 自定义动画</b> <br>
+     $(selector).animate({params},[speed],[easing],[callback]); <br>
+        {params}：要执行动画的CSS属性，带数字（必选）<br>
+        speed：执行动画时长（可选）<br>
+        easing:执行效果，默认为swing（缓动） 可以是linear（匀速）<br>
+        callback：动画执行完后立即执行的回调函数（可选）</p>
+    <h2>事件机制</h2>
+    <p><b>注册事件 $(selector).on(events[,selector][,data],handler);</b> <br>
+          第一个参数：events，绑定事件的名称可以是由空格分隔的多个事件（标准事件或者自定义事件）<br>
+          第二个参数：selector, 执行事件的后代元素（可选），如果没有后代元素，那么事件将有自己执行。<br>
+          第三个参数：data，传递给处理函数的数据，事件触发的时候通过event.data来使用（不常使用）<br>
+          第四个参数：handler，事件处理函数 <br>            
+        $(selector).on( 'click', function() {});表示给$(selector)绑定事件，并且由自己触发，不支持动态绑定。<br>       
+        $(selector).on( 'click','span', function() {});表示给$(selector)绑定代理事件，但必须是它的内部元素才能触发这个事件，支持动态绑定。<br>
+          <b>事件对象</b>   <br>
+          jQuery事件对象就是JavaScript事件对象的封装，处理了兼容性。<br>
+          通过事件对象可以获取事件对象的屏幕坐标，传递过来的数据，阻止某些默认行为。<br>
+          currentTarget始终是监听事件者输出事件绑定的元素，target是事件真正发生者打印事件触发的元素，this始终等于currentTarget。e.target.innerHTML，可以输出事件触发元素的内容</p>
+    <h2>自制插件</h2>
+    <p><b> $.method =fn</b> <br>
+      在script标签内 声明自执行函数 <br>
+            (function($){$.add=function(a,b){ return a+b}}($)) <br>     
+            $.add(5,6)//11 <br></p>
+
+      <h2>jquery实例</h2>
+      <img src="../../dict/method/jquery-tab栏.png" alt=""> 
+      <hr>
+      <img src="../../dict/method/jquery-点击获取索引.png" alt=""> 
+           
+
+
+
+</div>

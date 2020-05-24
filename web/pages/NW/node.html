@@ -1,0 +1,13 @@
+<title>Node模块化</title>
+<base target="_blank">
+<link rel="shortcut icon" href="../../favicon.ico">
+<link rel="stylesheet" href="../../statics/lib/common.css">
+
+<div class="container">
+    <h2>Node模块化</h2>
+    <p>Node实现了JavaScript模块化编程，模块是Node应用程序基本组成部分，一个JS文件对应一个模块，但JS语言本身并没有一种模块机制来保证不同模块可以使用相同的变量名，Node是运用JS函数闭包功能，把一段代码的全局变量变成函数内部的局部变量。Node每一个模块都有一个moudle对象，每一个moudle对象都有一个exports属性，把模块内需要对外暴露的变量、对象、函数存放在这个属性上，类似原型继承的prototype属性。其他模块需要调用就用require方法， require() 后面接的是相对路径，在没有具体路径的时候，require 会首先检查 node.js 核心模块（如 "fs"），然后检查 node_module。</p>
+    <h2>文件模块</h2>
+    <p></p>
+    <h2>http模块</h2>
+    <p></p>
+</div>

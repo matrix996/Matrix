@@ -1,0 +1,143 @@
+
+<!DOCTYPE html>
+<html>
+
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>旋转木马轮播图</title>
+   <style>
+  *{
+      margin:0;padding:0
+    }
+    ol,ul{
+        list-style:none
+    }
+    .wrap{
+        width:1200px;
+        margin:100px auto;
+    }
+    .slide {
+        height:500px;
+        position: relative;
+    }
+    .slide li{
+        position: absolute;
+        left:200px;
+        top:0;
+    }
+    .slide li img{
+        width:100%;
+    }  
+    .prev,.next{
+        width:76px;
+        height:112px;
+        position: absolute;
+        top:50%;
+        margin-top:-56px;
+        background: url(../images/prev.png) no-repeat;
+        z-index: 99;
+    }
+    .next{
+        right:0;
+        background-image: url(../images/next.png);
+    }
+   </style>
+</head>
+<body>
+<div class="wrap" id="wrap">
+    <div class="slide" id="slide">
+        <ul>
+            <li>
+                <a href="#"><img src="../images/slidepic1.jpg" alt="" /></a>
+            </li>
+            <li>
+                <a href="#"><img src="../images/slidepic2.jpg" alt="" /></a>
+            </li>
+            <li>
+                <a href="#"><img src="../images/slidepic3.jpg" alt="" /></a>
+            </li>
+            <li>
+                <a href="#"><img src="../images/slidepic4.jpg" alt="" /></a>
+            </li>
+            <li>
+                <a href="#"><img src="../images/slidepic5.jpg" alt="" /></a>
+            </li>
+        </ul>
+        <div class="arrow" id="arrow">
+            <a href="javascript:;" class="prev" id="arrLeft"></a>
+            <a href="javascript:;" class="next" id="arrRight"></a>
+        </div>
+    </div>
+</div>
+<script src="../lib/animate-slide.js"></script>
+<script>
+    //每一张图片的位置大小等等的信息
+    var config = [{
+        width: 400,
+        top: 20,
+        left: 50,
+        opacity: 0.2,
+        zIndex: 2
+    }, //0
+        {
+            width: 600,
+            top: 70,
+            left: 0,
+            opacity: 0.8,
+            zIndex: 3
+        }, //1
+        {
+            width: 800,
+            top: 100,
+            left: 200,
+            opacity: 1,
+            zIndex: 4
+        }, //2
+        {
+            width: 600,
+            top: 70,
+            left: 600,
+            opacity: 0.8,
+            zIndex: 3
+        }, //3
+        {
+            width: 400,
+            top: 20,
+            left: 750,
+            opacity: 0.2,
+            zIndex: 2
+        } //4
+    ];
+    //通过animate_v5让属性产生变化
+    var lis = document.getElementsByTagName("li");
+    var arrElement = [];
+    for(var j = 0; j < lis.length ; j++){
+        //把li存到arr里面
+        arrElement.push(lis[j]);
+    }
+    //先调用一次，让所有的元素从中间散开
+    rotate();
+    //点击按钮让图片旋转起来
+    var arrRight = document.getElementById("arrRight");
+    var arrLeft = document.getElementById("arrLeft");
+    arrRight.onclick = function(){
+        //把最后一个元素取出来，放到第一个位置
+        arrElement.unshift(arrElement.pop());
+        //再次修改每隔元素的样式
+        rotate();
+    }
+    arrLeft.onclick = function(){
+        //把数组中的一个元素拿出来，放到末尾
+        arrElement.push(arrElement.shift());
+        //再次修改每隔元素的样式
+        rotate();
+    }
+    function rotate(){
+        for(var i = 0; i < arrElement.length ; i++){
+            animate_v5(arrElement[i],config[i]);
+        }
+    }
+</script>
+</body>
+
+</html>

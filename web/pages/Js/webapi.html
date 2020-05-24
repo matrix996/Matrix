@@ -1,0 +1,27 @@
+<title>文档接口</title>
+<base target="_blank">
+<link rel="shortcut icon" href="../../favicon.ico">
+<link rel="stylesheet" href="../../statics/lib/common.css">
+
+<div class="container">
+    <h2>文档接口WebApi</h2>
+    <h4>编程接口</h4>
+    <p>软件系统不同组成部分衔接的约定，是一些预先定义的函数，任何能从自身环境中分离出来的软件或代码块都可以成为API。
+        面向对象编程中，代码被编成对象，每一个对象都有一个API(一组公共方法和属性)，可以用他与其他对象进行交互。对象可以拥有私有内部逻辑，躲避外部环境影响（这就不是API）<br>
+        浏览器提供的一套操作浏览器功能和页面元素的API(BOM和DOM)
+        </p>
+    <h4>BOM - 浏览器对象模型</h4>
+    <p>一套操作浏览器功能的API，通过BOM可以操作浏览器窗口，比如：弹出框、控制浏览器跳转、获取分辨率等</p>
+    <p>对话框：alert(),prompt(),confirm()</p>
+    <p>页面加载事件：window.onload = function(){//当页面加载(包括图片,js,css,等)完成执行} <br>
+        window.onunload = function(){//当用户推出页面时执行}</p>
+    <p> 定时器：setTimeout(fn(){},1000)和clearTimeout（）//1000毫秒后调用函数 <br>
+            setInterval(fn(){},1000)和clearInterval()//每隔1000毫秒调用一次函数</p>
+    <p>loacation对象：获取或设置浏览器地址栏的URL:scheme://host:port/path?query#fragment </p>
+    <h4>DOM - 文档对象模型</h4>
+    <p>一套操作页面元素的API，DOM可以把HTML看做是文档树，通过DOM提供的API可以对树上的节点进行操作。</p>
+     <img src="../../dict/logic/webapi-dom操作引用方式.png" alt="">
+     <p>我们想要操作页面上的某部分就需要先获取到该部分对应的元素，才进行后续操作</p>
+     <img src="../../dict/logic/webapi-dom获取方式.png" alt="">
+
+</div>

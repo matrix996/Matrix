@@ -1,0 +1,234 @@
+<title>MP小程序</title>
+<base target="_blank">
+<link rel="shortcut icon" href="../../favicon.ico">
+<link rel="stylesheet" href="../../statics/lib/common.css">
+
+<div class="container">
+    <h2>MP概念框架</h2>
+    <h3>小程序缘起</h3>
+    <p>手机安卓系统中内置了一款高性能 webkit 内核浏览器,在 SDK 中封装为一个叫做 WebView 组件，当微信中的 WebView 逐渐成为移动 Web 的一个重要入口时，微信就有相关的 JS API 了。2015年初，微信发布了一整套网页开发工具包，称之为 JS-SDK，开放了拍摄、录音、语音识别、二维码、地图、支付、分享、卡券等几十个API。JS-SDK是对之前的 JSAPI一个包装，解决了移动网页能力不足的问题，但浏览器的白屏问题更加明显，于是设计了微信Web资源离线存储，类似HTML5的应用程序缓存，但遇到复杂的页面依然有白屏问题，微信于是设计了小程序系统。        
+    </p>
+    <p>在网页的一般开发流程中，我们通常会通过 JS 操作 DOM (对应 HTML 的描述产生的树)，以引起界面的一些变化响应用户的行为。例如，用户点击某个按钮的时候，JS 会记录一些状态到 JS 变量里边，同时通过 DOM API 操控 DOM 的属性或者行为，进而引起界面一些变化。当项目越来越大的时候，你的代码会充斥着非常多的界面交互逻辑和程序的各种状态变量，显然这不是一个很好的开发模式，因此就有了 MVVM 的开发模式（例如 React, Vue），提倡把渲染和逻辑分离。简单来说就是不要再让 JS 直接操控 DOM，JS 只需要管理状态即可，然后再通过一种模板语法来描述状态和界面结构的关系即可。
+        小程序的框架也是用到了这个思路，如果你需要把一个 Hello World 的字符串显示在界面上。 
+        <pre style='word-wrap: breaak-word;white-space: pre-wrap;'>
+            WXML 是这么写 :        
+            &lt;text&gt;{{msg}}&lt;/text&gt;
+            JS 只需要管理状态即可:        
+            this.setData({ msg: "Hello World" })
+            通过{{ }} 的语法把一个变量绑定到界面上，我们称为数据绑定。
+            仅仅通过数据绑定还不够完整的描述状态和界面的关系，还需要 if/else, for等控制能力。
+            在小程序里边，这些控制能力都用 wx: 开头的属性来表达。
+        </pre>       
+       </p>
+    <h3>编译环境</h3>
+    <img src="../../dict/mp/mp-编译环境.png" alt="">
+    <p>微信自定义的一套web规范wxml+wxss+json+js,视图层(WXML/WXSS)由Webview渲染，逻辑层(Javascript)运行在JSCore非浏览器和node环境，两者运行在独立线程。开发前需要在微信公众平台注册appId：wxfc6bdb17ea4b77ab</p>
+    <h3>环境配置</h3>
+    <p>小程序一些环境样式及条件需要手动配置，Window配置顶部导航栏文字样式、背景色，底部TabBar图标及跳转路径；page配置覆盖相同window配置的子选项；调用组件配置为'component':ture,"usingComponents":{组件名：组件路径}；网络请求域名需要在开发者工具中配置。<img src="../../dict/mp/mp-json.png" alt=""></p>
+    <h3>数据绑定</h3>
+    <p>描述状态与DOM的映射关系</p>
+    <p>组件数据渲染使用 Mustache语法（双大括号）将变量包起来的，动态数据均来自对应Page的data。通过事件对象setData方法更新数据。使用控制属性wx:for绑定一个数组即可迭代数组中各项的数据渲染该组件，wx:if绑定布尔数据可以有条件的渲染组件。通过bindtap给组件添加点击事件属性并通过data-*="{{ }}"进行事件传参。</p>
+    <h3>组件系统</h3>
+    <p>封装了JS代码的自定义HTML标签</p>
+    <p>基本组件容器组件view、文本组件text、图片组件image，功能组件富文本组件rich-text、导航组件navigator、表单组件button、input、checkbox、radio。 </p>
+   <P> 自定义组件在pagse同级新建目录自动生成四件套文件目录名.wxml/wxss/json/js, <br> 
+    js入口函数是Component({ })而非Page({ })，json设置component": true。调用此组件的目录json文件配置"usingComponents":{ 组件名称: 组件路径})。</P>
+    <h3>字体图标</h3>
+    <img src="../../dict/mp/mp-iconfont.png" alt="">
+    <h3>搜索组件</h3>
+    <p> 展示用text组件代替input，点击事件进入搜索组件。<br>
+        生命周期函数实现组件传参options。<br>
+        传参需要this.setData({})更新数据。<br>
+        有图标组件icon，type赋值search。 <br>
+        <img src="../../dict/mp/mp-搜索组件.jpg" alt="">
+    </p>
+    <h3>微信登录模式</h3>
+    <p>
+            登录认证模式采用jwt (json web token) <br>
+            1. 请求登录   <br>
+            2. 获取token  <br>
+            3. 访问有权限的路径必须把token放置到http 头中"Authorization" : token <br>
+            4. token有一定有效期，如果服务器返回 token 无效则需要重新登录 <br>
+        <pre style="word-wrap: break-word;">
+                1、判断是否是私有api
+                if (params.url.includes('my/')) {
+                // 获取 token 
+                const token = wx.getStorageSync('token');
+                if (token) {
+                // 在参数中添加请求头属性
+                params.header = {
+                ...params.header,
+                "Authorization": token
+                }
+                }else {
+                // 跳转到授权登录页面 
+                wx.navigateTo({
+                url: '/pages/auth/auth',
+                });
+                // 没有授权就退出函数，需要返回 Promise 对象，防止外部 then 的时候报错。
+                return new Promise(() => {});
+                }
+                }
+
+                 2、登录获取token
+                - 请求路径：https://api.zbztb.cn/api/public/v1/users/wxlogin
+                - 请求方法：post
+                - 请求参数
+                | 参数名 | 参数说明 
+                | encryptedData | 微信获取用户信息后得到，加密数据 
+                | rawData | 用户信息 
+                | iv | 微信获取用户信息后得到 
+                | signature | 微信获取用户信息后得到，签名
+                | code | 微信登录后获取 
+                wxml
+                &lt;button type="primary" open-type="getUserInfo" bindgetuserinfo="getUserInfo"&gt;微信授权登录&lt;/button&gt;
+                 js
+                // 点击登录授权按钮触发的事件
+                getUserInfo(event) {
+                // 1. 获取用户信息
+                const { encryptedData,iv,rawData,signature} = event.detail;
+                // 2. 执行微信登录，获取 code
+                wx.login({
+                success: res => {
+                const {code} = res; 
+                // 组装请求参数
+                const params = {encryptedData,iv,rawData,signature,code} 
+                // 调用获取 token 的请求
+                this.getTokenData(params);
+                }
+                })
+                }, 
+                getTokenData(params) {
+                this.request({
+                url: 'users/wxlogin',
+                // 登录接口请求方式为 POST
+                method: 'POST',
+                // 请求参数
+                data: {...params}
+                }).then(res => { 
+                if (res) {
+                const {token} = res;
+                // 把 token 添加到本地存储中
+                wx.setStorageSync('token', token);
+                // 回退上一页
+                wx.navigateBack();
+                }
+                })
+                }, 
+                request(params){
+                // 抽离项目基本路径
+                const baseURL = "https://api.zbztb.cn/api/public/v1/";
+                // 1.0 在发送请求之前，先显示加载框
+                wx.showLoading({
+                title: '疯狂加载中...',
+                // 是否显示透明蒙层，防止触摸穿透
+                mask: false
+                });
+                // 通过 Promise 对象，把请求成功和失败的回调函数进行封装
+                return new Promise((resolve, reject) => {
+                // 2.0 发送请求
+                wx.request({
+                // 直接把所有的参数解构
+                ...params,
+                // 2.1 !! url 请求地址 = 基本路径 + 传入的 url
+                url: baseURL + params.url,
+                // 2.2 请求成功的回调函数
+                success: res => {
+                // 解构返回结果
+                const {
+                message
+                }= res.data;
+                // 请求成功，执行 Promise 的 resolve 回调函数
+                resolve(message);
+                },
+                fail: err => {
+                reject(err);
+                },
+                // 请求完成的时候
+                complete: res => {
+                // 3.0 隐藏加载框
+                wx.hideLoading();
+                }
+                })
+                });
+                }               
+        </pre>            
+    </p>
+    <h3>获取添加地址</h3>
+    <img src="../../dict/mp/mp-cart-获取地址.png" alt="">
+    <pre>
+        js
+            data: {
+            // 收货地址
+            address: {},
+            },
+            chooseAddress() {
+            // 微信内部原生的收货地址界面，而且所有小程序收货地址信息都是互通的
+                 wx.chooseAddress({
+                    success: res => { 
+                        const {
+                            userName,
+                            telNumber,
+                            provinceName,
+                            cityName,
+                            countyName,
+                            detailInfo
+                        }= res;
+                        const address = {
+                        userName,
+                        telNumber,
+                        addressInfo: provinceName + cityName + countyName + detailInfo
+                         }
+            // 把地址设置到页面中
+                 this.setData({ address});
+            // 保存到本地存储中
+                wx.setStorageSync('address', address);
+                }
+            });
+            },
+            onShow: function() {
+            this.setData({address: wx.getStorageSync('address') || {}, 
+                });
+            }
+          
+        wxss:
+            .address {
+            padding: 20rpx;
+            border-bottom: 10rpx solid #eb4450;
+            min-height: 200rpx;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            }
+            .address-selected {
+            width: 100%;
+            line-height: 60rpx;
+            }
+            .address-selected-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            }
+            /*绘制箭头图标*/
+            .address-selected-head::after {
+            content: "";
+            display: block;
+            width: 20rpx;
+            height: 20rpx;
+            border-top: 5rpx solid #ccc;
+            border-right: 5rpx solid #ccc;
+            transform: translateX(-20rpx) rotate(45deg);
+            }
+            
+    </pre>
+    <h3>购物车逻辑案例</h3>
+    <ul>
+        <li>添加购物车<img src="../../dict/mp/mp-cart-添加购物车.png" alt=""></li>
+        <li>获取购物车<img src="../../dict/mp/mp-cart-获取购物信息.png" alt=""></li>
+        <li>增减购物<img src="../../dict/mp/mp-cart-购物车增减.png" alt=""></li>
+        <li>选中购物<img src="../../dict/mp/mp-cart-选中购物.png" alt=""></li>
+        <li>购物总价<img src="../../dict/mp/mp-cart-购物车总价.png" alt=""></li>
+    </ul>
+</div>

@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <style type="text/css">     
+        h1 {
+            background-color: skyblue;
+            color: white;
+            text-align: center;
+        }
+        
+        h2 {
+            color: #596b79;
+        }        
+        #content>div {
+            float: left;
+            width: 100px;
+            height: 50px;
+            margin: 5px;
+            font-size: 20px;
+            line-height: 50px;
+            text-align: center;
+        }        
+        .cell {
+            background-color: #809bb0;
+            color: white;
+        }        
+        .current {
+            background-color: skyblue;
+            color: blueviolet;
+        }        
+        button {
+            display: inline-block;
+            height: 50px;
+            /*width: 50px;*/
+            background-color: skyblue;
+            color: white;
+            font-size: 16px;
+            margin: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>点名系统</h1>
+    <h2 id="beChosed">被选中的小伙伴：</h2>
+    <button id="start">开始</button>
+    <button id="stop">停止</button>
+    <div id="content"></div>
+</body>
+<script>  
+     var Datas = `吕凌,黄宝城,占勇,黄邦骏,卢荣彬,潘冠宇,黄意成, 
+     温嘉伟,黄麒霖,李龙强,曹嘉俊,黄庆,宋文景,胡乙明,蔡泳琳,符云挺,
+     石文超,梅文浩,梁宇航,黄永堂,何储军,朱纪宇,陈奕帆,杨财龙,李志侠, 
+     杨雨华,刘龙,谢廷顺,屈雪龙,谢勇涛,魏育辉,刘贺,温梓超,唐云,李业梆,
+     袁诗儿,马艺荣,储刘予,李帅,麦凤娟,赖小锋,李友鹏,王梦兰,刘明健,王坤,
+      李泽铭,吴有城,肖浩辉,许俊超,叶万清,凌俊竹,洪灿锋,李文涛,何永乐,
+      张乔仁,黎金辉,徐灵,温国强`;    
+    var Arr = Datas.split(",");
+    var dataArr = rand(Arr);
+    window.onload = function() {
+        var html = "";
+        for (var i = 0; i < dataArr.length; i++) {
+
+            html += "<div class='cell'>" + dataArr[i] + "</div>";
+        }
+        document.getElementById("content").innerHTML = html;
+    }
+    var start = document.getElementById("start");
+    var stop = document.getElementById("stop");
+    var timeId = null;
+    var flag = true;
+    var s = null;
+    start.onclick = function() {
+        if (flag) {
+            flag = false;
+            clearInterval(timeId);
+            var divs = document.querySelectorAll(".cell");
+            timeId = setInterval(function() {
+                // 单选的随机数
+                // var ran = Math.round(Math.random() * (divs.length - 1));
+                // 多选的随机数组
+                var ranArr = [];
+                // 获取随机的数组
+                for (var i = 0; i < 5; i++) {
+                    var ran = Math.round(Math.random() * (divs.length - 1));
+                    ranArr.push(ran);
+                }                
+                // 重置高亮
+                for (var i = 0; i < divs.length; i++) {
+                    divs[i].className = "cell";
+                }
+                // 单个设置高亮
+                // for (var i = 0; i < divs.length; i++) {
+                //     divs[ran].className = "current";
+                // }
+                 // 多选设置高亮
+                for (var i = 0; i < ranArr.length; i++) {
+                    divs[ranArr[i]].className = "current";
+                }
+
+            }, 30);
+        }
+    }
+    stop.onclick = function() {
+        clearInterval(timeId);
+        flag = true;
+    }        
+    //  封装随机打乱数组的函数 
+    function rand(arr) {
+        var len = arr.length
+            //首先从最大的数开始遍历，之后递减
+        for (var i = arr.length - 1; i >= 0; i--) {
+            //随机索引值randomIndex是从0-arr.length中随机抽取的
+            var randomIndex = Math.floor(Math.random() * (i + 1));
+            //下面三句相当于把从数组中随机抽取到的值与当前遍历的值互换位置
+            var itemIndex = arr[randomIndex];
+            arr[randomIndex] = arr[i];
+            arr[i] = itemIndex;
+        }
+        // 每一次的遍历都相当于把从数组中随机抽取（不重复）的一个元素放到数组的最后面
+        // （索引顺序为：len-1,len-2,len-3......0）
+        return arr;
+    }
+</script>
+
+</html>

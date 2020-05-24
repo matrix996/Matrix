@@ -1,0 +1,195 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+        ul {
+            list-style: none;
+        }
+        .box {
+            width: 730px;
+            height: 454px;
+            padding: 8px;
+            border: 1px solid green;
+            margin: 100px auto;
+        }
+        .inner {
+            position: relative;
+            overflow: hidden;
+            height: 454px;
+        }
+        #imglist {
+            width: 700%;
+            position: absolute;
+            left: 0;
+        }
+        li {
+            float: left;
+        }
+        .list {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            margin-left: -85px;
+        }
+        .list i {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background-color: #fff;
+            color: #333;
+            float: left;
+            font-style: normal;
+            line-height: 20px;
+            font-size: 14px;
+            text-align: center;
+            margin-right: 10px;
+            cursor: pointer;
+        }
+        .list i:last-child {
+            margin-right: 0;
+        }
+        .list i.current {
+            background-color: skyblue;
+            color: #fff;
+        }
+        .arrow {
+            position: absolute;
+            width: 100%;
+            top: 50%;
+            margin-top: -30px;
+        }
+        .arrow-left,.arrow-right{
+            width: 30px;
+            height: 60px;
+            position: absolute;
+            font: 20px/60px "consolas";
+            color: #fff;
+            background-color: rgba(0,0,0,.3);
+            text-align: center;
+            cursor: pointer;
+        }
+        .arrow-right {
+            right: 0;
+        }
+    </style>
+</head>
+<body>
+<div class="box" id="box">
+    <div class="inner" id="inner">
+        <ul id="imglist">
+            <li><a href="#"><img src="../../statics/images/jslbt (1).jpg" alt=""></a></li>
+            <li><a href="#"><img src="../../statics/images/jslbt (2).jpg" alt=""></a></li>
+            <li><a href="#"><img src="../../statics/images/jslbt (3).jpg" alt=""></a></li>
+            <li><a href="#"><img src="../../statics/images/jslbt (4).jpg" alt=""></a></li>
+            <li><a href="#"><img src="../../statics/images/jslbt (5).jpg" alt=""></a></li>
+            <li><a href="#"><img src="../../statics/images/jslbt (6).jpg" alt=""></a></li>
+            <li><a href="#"><img src="../../statics/images/jslbt (1).jpg" alt=""></a></li>
+        </ul>
+        <div class="list">
+            <i class="current">1</i>
+            <i>2</i>
+            <i>3</i>
+            <i>4</i>
+            <i>5</i>
+            <i>6</i>
+        </div>
+        <div class="arrow">
+            <span class="arrow-left">&lt;</span>
+            <span class="arrow-right">&gt;</span>
+        </div>
+    </div>
+</div>
+<script src="../../statics/lib/animate-slide.js"></script>
+<script>
+    //获取元素
+    var box = document.getElementById("box");
+    var inner = document.getElementById("inner");
+    var ul = inner.children[0];
+    var list = inner.children[1].children;
+    var arrow = inner.children[2];
+    var leftArrow = arrow.children[0];
+    var rightArrow = arrow.children[1];
+    //图片宽度
+    var imgWidth = ul.children[0].offsetWidth;    
+    //图片的当前索引
+    var currentIndex = 0;
+    //序号切换
+    for(var i = 0; i < list.length ; i++){
+        list[i].index = i;
+        list[i].onmouseover = mouseOverHandler;
+    }
+    function mouseOverHandler(){
+        //要记得把currentIndex跟当前的序号同步
+        currentIndex = this.index;
+        //计算ul的位置
+        //  公式：  索引  * 图片宽度 * -1
+        var target =  this.index * imgWidth * -1;
+        //重新设定
+        animate_v1(ul,target);
+        //修改圆点的样式
+        for(var j = 0; j < list.length ; j++){
+            list[j].removeAttribute("class");
+        }
+        this.className = "current";
+    }
+    //手动切换
+    rightArrow.onclick = moveRight;
+    function moveRight(){
+        //判断是否是最后一张，如果是，循环到第二张
+        if(currentIndex == ul.children.length - 1){
+            //恢复到第一张的位置，以便下面的代码进行切换到第二张
+            ul.style.left = 0;
+            //把索引同步
+            currentIndex = 0;
+        }
+        //让图片从小到大变化
+        currentIndex++;
+        //计算ul应该在的位置
+        var target = currentIndex * imgWidth * -1;
+        //重新设定
+        animate_v1(ul,target);
+        //处理圆点的样式
+        for(var j = 0; j < list.length ; j++){
+            list[j].removeAttribute("class");
+        }
+        //特殊处理一下最后一张的圆点，因为最后一张的时候，用户认为是第一张，第一个圆点应该改变
+        if(currentIndex == ul.children.length - 1){
+            list[0].className = "current";
+        }else{
+            //跟当前图片索引对应的圆点变成特殊
+            list[currentIndex].className = "current";
+        }
+    }
+    leftArrow.onclick = function(){
+        if(currentIndex == 0){
+            currentIndex = ul.children.length - 1;
+            ul.style.left = currentIndex * imgWidth * -1 +"px";
+        }
+        currentIndex--;
+        var target = currentIndex * imgWidth * -1;
+        animate_v1(ul,target);
+        //处理圆点的样式
+        for(var j = 0; j < list.length ; j++){
+            list[j].removeAttribute("class");
+        }
+        list[currentIndex].className = "current";
+    }
+    //自动轮播
+    var timer = setInterval(moveRight,1500);
+    //悬停停止自动轮播，离开继续自动轮播
+    box.onmouseover = function(){
+        //停止自动轮播 - 停止定时器即可
+        clearInterval(timer);
+    }
+    box.onmouseout = function(){
+        timer = setInterval(moveRight,1000);
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <style>
+
+        #box {
+            width: 200px;
+            height: 200px;
+            background-color: #0a0;
+            position: absolute;
+            top: 100px;
+            left: 0;
+        }
+
+    </style>
+</head>
+<body>
+<input type="button" value="动起来" id="btn"/>
+<div id="box"></div>
+<script>
+
+    /**
+     *   目标：让一个盒子可以左右移动的函数
+     *
+     */
+//    使用全局变量来供函数使用是我们不提倡
+//    var timer;
+
+    function animate(element,target){
+        //每次调用函数的时候，都把原来作用在元素身上的定时器先清除
+        clearInterval(element.timer);
+        //每隔一段时间，修改一次元素的属性
+        element.timer = setInterval(function(){
+            //获取当前值
+            var current = element.offsetLeft;
+            //计算出下一步该到哪里
+            var step = 20;//定义一个步长，每隔一段时间移动的距离
+            //判断方向，如果是正方向，+=，如果是负方向-=
+            current += current <= target ? step : -step;
+            //重新设定元素的样式
+            element.style.left = current + "px";
+            //判断满足条件停下 -- 当当前位置和目标位置的距离小于步长
+            if(Math.abs(target - current) <= step){
+                clearInterval(element.timer);
+                //为了防止距离和步长不整除的情况，强制设定某个元素的位置
+                element.style.left = target + "px";
+            }
+        },20);
+    }
+    //点击按钮移动div
+    var btn= document.getElementById("btn");
+    var box= document.getElementById("box");
+    btn.onclick = function(){
+        //调用函数移动div
+        animate(box,1000);
+    }
+</script>
+</body>
+</html>

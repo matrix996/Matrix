@@ -1,0 +1,63 @@
+<style>
+    .container{
+        width: 400px;
+        margin: 100px auto;      
+    }
+    .hour,.minute,.second{      
+        line-height: 30px;
+        text-align: center;
+        float: left;
+        width: 30px;
+        height: 30px;
+        background-color: #000;
+        margin-right: 5px;
+        color: red;
+    }
+</style>
+
+<div class="container">
+    <span class="hour">01</span>
+    <span class="minute">00</span>
+    <span class="second">00</span>
+</div>
+
+<script>
+    var container = document.querySelector('.container')
+    var hour = container.children[0]
+    var minute = container.children[1];
+    var second = container.children[2];  
+   var timed=setInterval(function(){
+        var sec=parseInt(second.innerText);
+        var min=parseInt(minute.innerText)
+        var hou=parseInt(hour.innerText)
+        sec--;
+        if(sec<0){
+            if(min==0&hou==0){
+                clearInterval(timed)
+                return;
+            }
+            sec=59;            
+            min--;
+            if(min<0){
+                min=59;               
+                hou--;
+                if(hou<0){
+                    hou=0;                   
+                }
+                if(hou<10){
+                    hou='0'+hou;
+                }
+                hour.innerText=hou;
+            }
+            if(min<10){
+                min='0'+min;
+            }
+            minute.innerText=min;
+            
+        }
+        if(sec<10){
+            sec='0'+sec;
+        }
+        second.innerText=sec;       
+    },1000)
+</script>

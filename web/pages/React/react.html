@@ -1,0 +1,19 @@
+<title>ract核心概念</title>
+<base target="_blank">
+<link rel="shortcut icon" href="../../favicon.ico">
+<link rel="stylesheet" href="../../statics/lib/common.css">
+
+<div class="container">
+    <h2>React核心概念</h2>
+    <h3>函数组件</h3>
+    <p>函数组件，运用JSX语法，在Js文件中直接写HTML标记语言，本质上是Js函数，函数名即组件名，它接受任意的入参(即props)，并返回用于描述页面展示内容的React元素，并将函数接受的属性转换为props属性，通过调用ReactDOM.render()来渲染我们修改的元素</p>
+    <pre style="word-wrap: break-word;">
+        function Welcome(props){
+            return &lt;h1&gt;Hello,{props.name}&lt;/&gt;
+        }
+        ReactDOM.render(
+            &lt;Welcome name="Sara" /&gt;,document.getElementById('root')
+        )
+    </pre>
+    <p>一个JS文件就是一个组件，文件头需要导入React模块，import React from 'react'，函数内部必须返回一个跟标签嵌套，文件末尾必须导出这个组件函数，不需要像Vue使用模板语言与指令符让数据与DOM绑定，赋予开发者许多编程能力。</p>
+</div>

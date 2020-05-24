@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+       * {
+      margin: 0;
+      padding: 0;
+    }
+    .map {
+      width: 800px;
+      height: 600px;
+      margin: 60px auto;
+      background-color: #cccccc;
+      position: relative;
+    }
+    .map div {
+      position: absolute;
+    }
+    </style>
+</head>
+<body>
+    <div class="map"></div>
+</body>
+</html>
+<script>
+// 定义一个变量来存储window对象下面的document对象,尽量用沙箱内的数据，避免变量的污染
+//食物对象
+(function(){
+   // 1. 获取地图对象
+var map = document.querySelector(".map");
+//食物对象属性
+function Food(params) {
+    // new Food如果没有传递参数的话,params默认值是undefined
+    params = params || {} // 为了避免params出错,在这里要进行一个短路运算
+    this.width = params.width || 40;
+    this.height = params.height || 40;
+    this.color = params.color || 'orangered';
+    this.x = params.x || 0;
+    this.y = params.y || 0;
+    this.create();//函数方法的命名
+    this.render();    
+}
+//食物创建方法
+Food.prototype.create = function (){ 
+    //2. 动态创建食物,也就是创建小方块
+    var fDiv = document.createElement("div");
+    // 3. 设置食物的数据
+    fDiv.style.width = this.width + 'px'
+    fDiv.style.height = this.height + 'px'
+    fDiv.style.backgroundColor = this.color
+    fDiv.style.left = this.x + 'px'
+    fDiv.style.top = this.y + 'px'
+    // 4. 将创建出来的食物追加到地图上
+    map.appendChild(fDiv)
+    // 将生成的小方块存到对象的某个属性中
+        this.ele = fDiv
+    }
+  //食物对象随机生成方法
+    Food.prototype.render = function (){
+    //随机生成事物对象， 所谓随机生成，就是让食物的位置是随机生成的    
+    var random = function(min, max) {
+        if (max == null) {
+            max = min;
+            min = 0;
+        }
+        return min + Math.floor(Math.random() * (max - min + 1));
+    };      
+       var x = random(0,map.offsetWidth/this.width-1)*this.width
+       var y = random(0,map.offsetHeight/this.height-1)*this.height
+        this.ele.style.left = x + 'px'
+        this.ele.style.top = y + 'px'
+        this.ele.style.backgroundColor='rgb('+ random(0,255)+','+ random(0,255)+','+ random(0,255)+')'          
+        // 将新生成的坐标重新存到实例对象的x,y属性中
+        this.x = x
+        this.y = y      
+    }
+        //食物对象清除方法
+        Food.prototype.remove = function (){
+        this.ele.parentNode.removeChild(this.ele)
+    }
+        // 向外暴露Foof构造函数
+        window.Food = Food;
+    })(window);
+
+//创建蛇对象
+(function(window){
+    var DIRECTION = Object.create(Object.prototype,{
+        LEFT:{
+            value:1
+        },
+        TOP:{
+            value:2
+        },
+        RIGHT:{
+            value:3
+        },
+        BOTTOM:{
+            value:4
+        }
+    })
+    var map = document.querySelector(".map");
+    // 1. 创建蛇的构造函数
+    function Snake(params){
+        params = params || {}
+        this.width=params.width || 40;
+        this.height = params.height || 40;
+        this.direction = params.direction || DIRECTION.RIGHT
+        this.eles = [] // 给当前实例this添加了一个eles属性来存储所有的小方块，所有的小方块构成了蛇身
+        this.body = [
+            {
+                x:160,
+                y:40,
+                color:'#f00'
+            },
+            {
+                x:120,
+                y:40,
+                color:'#fff'
+            },
+            {
+                x:80,
+                y:40,
+                color:'#fff'
+            },
+            {
+                x:40,
+                y:40,
+                color:'#fff'
+            }
+        ]
+        this.create();// 来生成小方块
+    }
+    // 2. 添加蛇的创建方法，来生成对应的小方块
+    Snake.prototype.create = function (){ 
+        var arr = this.body
+       for(var i=0;i<arr.length;i++){
+           var sDiv = document.createElement("div"); //动态生成div
+           // 2.3 给生成的小方块设置属性
+           sDiv.style.width = this.width + 'px';
+           sDiv.style.height = this.height + 'px'       
+           sDiv.style.backgroundColor = arr[i].color
+           sDiv.style.left = arr[i].x + 'px'
+           sDiv.style.top = arr[i].y + 'px'
+           // 2.4将创建出来的小方块追加到map当中
+              map.appendChild(sDiv)
+          // 2.5 将创建出来的小方块存到对象实例的属性中
+            this.eles.push(sDiv)
+       }
+    }
+    // 3.蛇身移动
+    Snake.prototype.move = function (){
+      // 蛇身移动的本质，其实是先让蛇身的最后一个小方块向前移动，
+      //要想让最后一个小方块向前移动就得让最后一个小方块拥有前一个小方块的坐标位置，其它小方块，以此类推
+        var eles = this.eles
+        var body = this.body
+       for(var i=eles.length-1;i>0;i--){
+          // 3.1 首先更新的是数组中坐标
+           body[i].x = body[i-1].x  // 让当前的元素的坐标值等于前一个元素的坐标值
+           body[i].y = body[i-1].y
+           // 3.2 要小方块根据新的坐标值进行移动
+           eles[i].style.left = body[i].x + 'px'
+           eles[i].style.top = body[i].y + 'px'
+       }
+       // 3.4 蛇头移动
+        // 因为蛇头有四个方向 ，左上右下,要根据方向来判断蛇头移动的位置
+        switch(this.direction){
+            case 1:
+                //body[0].x = body[0].x - this.width;
+              body[0].x -= this.width;
+                break;
+            case 2:
+                body[0].y -= this.height;
+                break;
+            case 3:
+                body[0].x += this.width;
+                break;
+            case 4:
+                body[0].y += this.height;
+        }
+
+        // 3.5 让蛇头小方块，根据数组中蛇头的坐标值进行移动
+        eles[0].style.left = body[0].x + 'px'
+        eles[0].style.top = body[0].y + 'px'
+    }
+       // 4. 蛇要长长
+       Snake.prototype.growth = function (){
+      // 所谓蛇长大一节,就是重新动态创建一个小方块，这个新创建出来的小方块的坐标，是之前蛇身中最后一个小方块的坐标
+        // 4.1 获取最后一个小方块的坐标值
+        var last = this.body[this.body.length-1]
+        var block = {  // 新生成的小方块的坐标值
+            x:last.x,
+            y:last.y,
+            color:last.color
+        }
+        // 4.2 创建新生成的小方块，并赋属性值
+        var sDiv = document.createElement("div");
+        sDiv.style.width = this.width + 'px'
+        sDiv.style.height = this.height + 'px'
+        sDiv.style.left = last.x + 'px'
+        sDiv.style.top = last.y + 'px'
+        sDiv.style.backgroundColor = last.color
+        // 4.3 将新生成的小方块追加到map中
+        map.appendChild(sDiv)
+        // 4.4 将小方块存储到this.eles当中,因为this.eles存储了蛇身
+        this.eles.push(sDiv)
+        // 4.5 将新生成的小方块的坐标也要存到this.body当
+        this.body.push(block)
+    }
+        window.Snake = Snake;
+        window.DIRECTION = DIRECTION
+    })(window);
+
+        //Game对象
+        (function(window){
+        // var document = window.document
+        var map = document.querySelector(".map");
+        var DIRECTION = window.DIRECTION
+        function Game(){
+        // 把食物和蛇都当成是游戏的一个属性
+        this.Food = new Food()
+        this.Snake = new Snake()
+        this.init()
+    }
+    Game.prototype.init = function (){
+        var food = this.Food
+        var timeId = setInterval(function () {
+            this.Snake.move();
+            // 1.时时的进行判断,当蛇头的坐标和食物的坐标相等的时候，就算是吃到食物         
+            if(food.x==this.Snake.body[0].x&&food.y==this.Snake.body[0].y){
+                // 1.2只要条件满足，就算是吃到了食物
+                food.remove(); // 将当前的食物移除掉
+                // 1.3 立即生成一个新的食物
+                food = new Food();
+                // 1.4 蛇要生长
+                this.Snake.growth()
+            }
+            // 2. 碰撞检测
+            if(this.Snake.body[0].x<0||this.Snake.body[0].x>(map.offsetWidth-this.Snake.width)
+            ||this.Snake.body[0].y<0||this.Snake.body[0].y>(map.offsetHeight-this.Snake.height)){
+                alert('Game Over')
+                clearInterval(timeId)
+            }
+        }.bind(this), 300)
+        // 要根据按钮来改变蛇头移动的方向
+        // 给文档注册事件,判断按下的键是哪一个
+        document.addEventListener('keydown', function (e) {
+            switch (e.keyCode) {
+                case 37:
+                    this.Snake.direction = DIRECTION.LEFT;
+                    break;
+                case 38:
+                    this.Snake.direction = DIRECTION.TOP;
+                    break;
+                case 39:
+                    this.Snake.direction = DIRECTION.RIGHT;
+                    break;
+                case 40:
+                    this.Snake.direction = DIRECTION.BOTTOM;
+            }
+        }.bind(this))
+    }
+        window.Game = Game
+    })(window);
+
+    new Game();
+</script>

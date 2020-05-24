@@ -1,0 +1,33 @@
+.container{
+    width: 1200px;
+    margin: 0 auto;
+}
+/*清除浏览器默认margin和padding偏差*/
+/* * {
+    margin: 0;
+    padding: 0;
+    } */
+    /*清除浮动*/
+    .clearfix:after {
+    content: "";
+    display: block;
+    height: 0;
+    clear: both;
+    visibility: hidden;
+    }
+    .clearfix{
+    *zoom: 1;
+    }
+    /*清除列表项目符号*/
+    li {
+    list-style: none;
+    }
+    /*清除超链下划线*/
+    a {
+    text-decoration: none; 
+    }
+    /*解决图片底册有空白缝隙*/
+    img {
+    vertical-align: top;
+    }
+    

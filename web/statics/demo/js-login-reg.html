@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+
+</head>
+<body>
+QQ号：<input type="text" id="txtQQ"><span></span><br>
+邮箱：<input type="text" id="txtEMail"><span></span><br>
+手机：<input type="text" id="txtPhone"><span></span><br>
+生日：<input type="text" id="txtBirthday"><span></span><br>
+姓名：<input type="text" id="txtName"><span></span><br>
+</body>
+<script>
+    var ipts = document.querySelectorAll("input");   
+    function check(reg,element,tip){
+        element.onblur = function(){
+            //获取输入框的内容
+            var value = this.value;
+            //跟正则对象匹配
+            var res = reg.test(value);
+            //如果不匹配，提示错误
+            if(res){
+                //清除错误提示
+                this.nextElementSibling.innerText = "";
+            }else{
+                //提示错误
+                this.nextElementSibling.style.color = "red";
+                this.nextElementSibling.innerText = tip;
+            }
+        }
+    }
+    check( /^[1-9]\d{4,11}$/,ipts[0],"请输入正确的qq号码");
+    check(/^\w+@\w+\.\w+$/,ipts[1],"请输入正确的邮箱");
+    check(/^\d{11}$/,ipts[2],"请输入正确的手机号码");
+    check(/^\d{4}-\d{1,2}-\d{1,2}$/,ipts[3],"请输入正确的生日");
+    check(/^[\u4e00-\u9fa5]{2,3}$/,ipts[4],"请输入正确的姓名");
+</script>
+</html>

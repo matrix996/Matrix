@@ -1,0 +1,37 @@
+<title>webpack模块包</title>
+<base target="_blank">
+<link rel="shortcut icon" href="../../favicon.ico">
+<link rel="stylesheet" href="../../statics/lib/common.css">
+<style>
+ li {
+     list-style: inherit ;
+    }
+</style>
+
+<div class="container">
+<h2>webpack模块打包</h2>
+<h3>模块化思想</h3>
+<p>模块化是把一个复杂的系统分解到多个模块里编码，过去开发网页通过命名空间方式封装代码库，例如jQuery库把它的API都放在$下，加载完jQuery后通过$.调用API，但这样会造成命名冲突，如zepto也是放在$下，同时无法管理项目的依赖关系和加载顺序。</p>
+<img src="../../dict/module/webpack-代码模块化.png" alt="">
+<ul> <b>模块化规范</b>
+    <li><b>CommonJS</b>通过require方法同步地加载依赖(const moduleA=require('./文件A'))，通过module.exports(module.exports=moduleA.fn)向外暴露接口，Node.js也是采用这种方式，但无法直接运行在浏览器环境下，必须通过工具转换成ES5。</li>
+    <li><b>AMD</b>采用异步方式加载依赖的模块，解决浏览器环境的模块化问题，不过没有原生JS支持需要导入AMD库(requirejs)才能使用。定义模块 define('moduleA',['dep'],function(dep){return exports;})，导入模块require(['module'],function(module){})。</li>
+    <li><b>ES6模块化</b>终极模块化方案，导入import { readFile } from 'fs'，导出export default{...}。</li>
+</ul>
+<h3>构建工具</h3>
+<p>提高前端开发效率的新思想和新框架都有一个共同点：源代码无法直接运行，必须通过转换后才可正常运行，大多数构建工具都是用Node.js开发的</p>
+<h3>配置webpack环境</h3>
+<ol> 
+    <li>webpack/webpack-cli必须全局安装否则webpack指令无效 </li>
+    <li>webpack是node应用，先安装node的，查看npm源地址npm config get registry。配置淘宝镜像npm config set registry https://registry.npm.taobao.org</li>
+    <li> npm install -global webpack webpack-cli </li>
+    <li> 项目文件夹中npm init 创建【package.json】配置文件</li>
+    <li>项目文件夹中 npm install webpack --save-dev</li>
+    <li>在命令提示符中输入webpack -v，查看webpack是否配置成功以及当前webpack的版本信息</li>
+    <li>entry->output<img src="../../dict/module/webpack-最简打包.png" alt=""></li>
+    <li>Loader，文件转换打包 <img src="../../dict/module/webpack-loader.png" alt=""></li>
+    <li>Plugin，Webpack是通过plugins属性来配置需要使用的插件列表的。 plugins 属性是一个数组，里面的每一项都是插件的一个实例，在实例化一个组件时可以通过构造函数传入这个组件支持的配置属性。<img src="../../dict/module/webpack-plugin.png" alt=""></li>
+</ol>
+<h3>webpack核心概念</h3>
+<img src="../../dict/module/webpack-核心概念.png" alt="">
+</div>
